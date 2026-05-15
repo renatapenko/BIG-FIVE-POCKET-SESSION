@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Big Five</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F8F8F6;--w:#FFF;--g1:#F2F1EC;--g2:#E2E0D8;--t:#1A1A18;--t2:#55554E;--t3:#99998A;--terra:#B5623A}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:'Jost',sans-serif;font-weight:300;line-height:1.8;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
+.topbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:200;background:var(--g2)}
+.tbf{height:100%;transition:width .4s;background:linear-gradient(90deg,#8B35B8,#C87010,#229958,#B83258,#2450B8);width:0}
+#sCov{align-items:center;justify-content:center;text-align:center;padding:80px 24px;background:var(--w)}
+.cv-tag{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--t3);margin-bottom:36px}
+.cv-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(52px,11vw,96px);font-weight:300;line-height:.9;margin-bottom:14px}
+.cv-h1 em{font-style:italic;color:var(--terra)}
+.cv-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,2.2vw,20px);font-style:italic;color:var(--t2);max-width:460px;margin:0 auto 10px}
+.cv-info{font-size:12px;color:var(--t3);margin-bottom:40px}
+.cv-dims{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.cv-dim{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500}
+.cv-dot{width:7px;height:7px;border-radius:50%}
+.cv-btn{background:var(--t);color:var(--w);border:none;cursor:pointer;padding:14px 44px;border-radius:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:500;letter-spacing:2px;text-transform:uppercase;transition:all .25s}
+.cv-btn:hover{background:#333;transform:translateY(-1px)}
+.cv-note{font-size:11px;color:var(--t3);margin-top:12px}
+#sQ{background:var(--w)}
+.qh{background:var(--w);border-bottom:1px solid var(--g2);padding:16px 24px;position:sticky;top:3px;z-index:50}
+.qh-in{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.qbdg{font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:16px}
+.qinf{font-size:12px;color:var(--t3)}
+.qpg{max-width:680px;margin:0 auto;padding:36px 24px 20px;width:100%}
+.qitems{display:flex;flex-direction:column}
+.qi{padding:18px 0;border-bottom:1px solid var(--g1)}
+.qi:last-child{border-bottom:none}
+.qi-txt{font-family:'Cormorant Garamond',serif;font-size:clamp(16px,2.4vw,21px);font-weight:300;line-height:1.42;margin-bottom:12px}
+.qlbls{display:flex;justify-content:space-between;margin-bottom:5px}
+.qlbl{font-size:10px;color:var(--t3)}
+.qi-opts{display:flex;gap:5px}
+.qo{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:9px 2px;border:1.5px solid var(--g2);border-radius:7px;cursor:pointer;transition:all .18s;min-height:50px}
+.qo-n{font-family:'Cormorant Garamond',serif;font-size:clamp(15px,3vw,21px);font-weight:300;color:var(--t2);line-height:1}
+.qo-d{width:5px;height:5px;border-radius:50%;border:1px solid var(--g2);transition:all .18s}
+.qo.sel{border-color:var(--dc);background:var(--db)}
+.qo.sel .qo-n{color:var(--dc);font-weight:400}
+.qo.sel .qo-d{background:var(--dc);border-color:var(--dc)}
+.qnav{display:flex;align-items:center;justify-content:space-between;padding:20px 0 6px;border-top:1px solid var(--g1)}
+.qni{font-size:12px;color:var(--t3)}
+.qnbs{display:flex;gap:8px}
+.qbk{background:none;border:1.5px solid var(--g2);cursor:pointer;padding:9px 18px;border-radius:7px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
+.qnx{background:var(--t);color:var(--w);border:none;cursor:pointer;padding:9px 20px;border-radius:7px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;opacity:.25;pointer-events:none}
+.qnx.ok{opacity:1;pointer-events:auto}
+.qft{max-width:680px;margin:0 auto;padding:6px 24px 28px;width:100%}
+.qpb{height:3px;background:var(--g2);border-radius:2px;overflow:hidden}
+.qpbf{height:100%;border-radius:2px;transition:width .4s}
+.qerr{font-size:12px;color:#B03030;text-align:center;padding:5px 0;min-height:18px}
+#sLoad{align-items:center;justify-content:center;text-align:center;padding:40px;background:var(--w)}
+.ldh{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4.5vw,40px);font-weight:300;margin-bottom:8px}
+.lds{font-size:14px;color:var(--t3);margin-bottom:48px}
+.ldd{display:flex;gap:10px;justify-content:center}
+.lddot{width:12px;height:12px;border-radius:50%;animation:bounce 1.5s ease-in-out infinite}
+@keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+#sRes{background:var(--bg)}
+.rh{background:var(--w);padding:60px 24px 48px;text-align:center;border-bottom:1px solid var(--g2);position:relative;overflow:hidden}
+.rh::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#8B35B8,#C87010,#229958,#B83258,#2450B8)}
+.rh-tag{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--t3);margin-bottom:18px}
+.rh-h{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,5.5vw,58px);font-weight:300;line-height:1.05;margin-bottom:8px}
+.rh-h em{font-style:italic;color:var(--terra)}
+.rh-s{font-size:13px;color:var(--t3)}
+.rb{max-width:760px;margin:0 auto;padding:44px 20px 60px}
+.rc{background:var(--w);border-radius:14px;padding:30px;margin-bottom:16px;border:1px solid var(--g2);position:relative;overflow:hidden}
+.rc-rb::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#8B35B8,#C87010,#229958,#B83258,#2450B8)}
+.rc-lbl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--t3);margin-bottom:8px}
+.rc-nome{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3.2vw,30px);font-weight:400;margin-bottom:10px}
+.rc-nome em{font-style:italic;color:var(--terra)}
+.rc-desc{font-size:14px;color:var(--t2);line-height:1.9}
+.rrad{background:var(--w);border-radius:14px;padding:30px;margin-bottom:16px;border:1px solid var(--g2);text-align:center}
+.rrad-h{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2.4vw,22px);font-weight:300;margin-bottom:22px}
+.rrad-h em{font-style:italic;color:var(--terra)}
+.rleg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.rleg-i{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:500;color:var(--t2)}
+.rleg-d{width:8px;height:8px;border-radius:50%}
+.rdoms{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.rdom{background:var(--w);border-radius:14px;border:1px solid var(--g2);overflow:hidden}
+.rdom-top{display:flex;align-items:center;gap:12px;padding:18px 20px;cursor:pointer;transition:background .2s}
+.rdom-top:hover{background:var(--g1)}
+.rdom-ico{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:#fff;flex-shrink:0}
+.rdom-inf{flex:1}
+.rdom-n{font-size:14px;font-weight:500}
+.rdom-s{font-size:10px;color:var(--t3);margin-top:1px}
+.rdom-rt{text-align:right;flex-shrink:0}
+.rdom-pct{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3.8vw,32px);font-weight:300;line-height:1}
+.rdom-niv{font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.rdom-bw{padding:0 20px 5px}
+.rdom-bbg{height:4px;background:var(--g2);border-radius:2px;overflow:hidden}
+.rdom-bf{height:100%;border-radius:2px;width:0;transition:width 1.2s ease}
+.rdom-exp{max-height:0;overflow:hidden;transition:max-height .55s ease}
+.rdom-exp.op{max-height:2000px}
+.rdom-con{padding:4px 20px 22px}
+.rdom-desc{font-size:13px;color:var(--t2);line-height:1.9;margin-bottom:14px;padding-top:5px}
+.rfacets{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.rfacet{padding:13px 15px;border-radius:8px}
+.rfacet-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;gap:8px}
+.rfacet-n{font-size:13px;font-weight:500;flex:1}
+.rfacet-pct{font-size:13px;font-weight:500}
+.rfacet-bar{height:4px;border-radius:2px;background:rgba(0,0,0,.08);overflow:hidden}
+.rfacet-fill{height:100%;border-radius:2px;width:0;transition:width 1s ease}
+.rfacet-desc{font-size:12px;color:var(--t2);line-height:1.72;margin-top:7px}
+.rcombo-h{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2.4vw,24px);font-weight:300;margin-bottom:12px}
+.rcombo-h em{font-style:italic;color:var(--terra)}
+.rci{padding:11px 0;border-bottom:1px solid var(--g2);font-size:13px;color:var(--t2);line-height:1.82}
+.rci:last-child{border:none;padding-bottom:0}
+.rci b{color:var(--t);font-weight:500}
+.rft{text-align:center;padding:28px 0 0;border-top:1px solid var(--g2)}
+.rft-h{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,2.6vw,24px);font-weight:300;margin-bottom:7px}
+.rft-h em{font-style:italic;color:var(--terra)}
+.rft-d{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.75}
+.rft-btns{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.btn-p{background:var(--t);color:#fff;border:none;cursor:pointer;padding:11px 26px;border-radius:7px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase}
+.btn-o{background:transparent;border:1.5px solid var(--g2);color:var(--t2);border-radius:7px;cursor:pointer;padding:11px 26px;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase}
+@media(max-width:560px){
+  .qpg,.qft{padding-left:14px;padding-right:14px}
+  .rb{padding:28px 12px 44px}
+  .rc,.rrad{padding:20px 14px}
+  .rdom-top{padding:14px 12px}
+  .rdom-con{padding:3px 12px 18px}
+}
+@media print{
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  #sCov,#sQ,#sLoad,.rft-btns,.topbar{display:none!important}
+  #sRes{display:block!important;background:#fff!important}
+  .rdom-exp{max-height:none!important;overflow:visible!important}
+  .rb{max-width:100%!important;padding:16px!important}
+}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="tbf" id="tbF"></div></div>
+
+<div class="screen on" id="sCov">
+  <p class="cv-tag">Sessao Pocket</p>
+  <h1 class="cv-h1">Big <em>Five</em></h1>
+  <p class="cv-sub">60 afirmacoes. O que leva anos para perceber sobre si mesma, em 15 minutos.</p>
+  <p class="cv-info">60 afirmacoes · 5 tracos · 30 facetas · relatorio completo</p>
+  <div class="cv-dims">
+    <div class="cv-dim" style="background:#F2EAFA;color:#8B35B8"><div class="cv-dot" style="background:#8B35B8"></div>Neuroticismo</div>
+    <div class="cv-dim" style="background:#FBF0E0;color:#C87010"><div class="cv-dot" style="background:#C87010"></div>Extroversao</div>
+    <div class="cv-dim" style="background:#E2F5EC;color:#229958"><div class="cv-dot" style="background:#229958"></div>Abertura</div>
+    <div class="cv-dim" style="background:#FAE6EC;color:#B83258"><div class="cv-dot" style="background:#B83258"></div>Amabilidade</div>
+    <div class="cv-dim" style="background:#E2EAF8;color:#2450B8"><div class="cv-dot" style="background:#2450B8"></div>Conscienciosidade</div>
+  </div>
+  <button class="cv-btn" onclick="iniciar()">Comecar diagnostico</button>
+  <p class="cv-note">Responda com honestidade · Nao ha respostas certas ou erradas</p>
+</div>
+
+<div class="screen" id="sQ">
+  <div class="qh"><div class="qh-in">
+    <span class="qbdg" id="qBdg"></span>
+    <span class="qinf" id="qInf"></span>
+  </div></div>
+  <div class="qpg" id="qPg"></div>
+  <div class="qft">
+    <p class="qerr" id="qErr"></p>
+    <div class="qpb"><div class="qpbf" id="qPbF"></div></div>
+  </div>
+</div>
+
+<div class="screen" id="sLoad">
+  <p class="ldh">Montando seu relatorio...</p>
+  <p class="lds">5 tracos · 30 facetas · relatorio completo</p>
+  <div class="ldd">
+    <div class="lddot" style="background:#8B35B8;animation-delay:0s"></div>
+    <div class="lddot" style="background:#C87010;animation-delay:.25s"></div>
+    <div class="lddot" style="background:#229958;animation-delay:.5s"></div>
+    <div class="lddot" style="background:#B83258;animation-delay:.75s"></div>
+    <div class="lddot" style="background:#2450B8;animation-delay:1s"></div>
+  </div>
+</div>
+
+<div class="screen" id="sRes">
+  <div class="rh">
+    <p class="rh-tag">Seu relatorio completo</p>
+    <h2 class="rh-h">Perfil de <em>Personalidade</em></h2>
+    <p class="rh-s">60 respostas · 5 tracos · 30 facetas</p>
+  </div>
+  <div class="rb">
+    <div class="rc rc-rb" id="rPerf"></div>
+    <div class="rrad">
+      <h3 class="rrad-h">Seu mapa de <em>personalidade</em></h3>
+      <canvas id="radar" width="300" height="300" style="max-width:300px;width:100%"></canvas>
+      <div class="rleg">
+        <div class="rleg-i"><div class="rleg-d" style="background:#8B35B8"></div>Neuroticismo</div>
+        <div class="rleg-i"><div class="rleg-d" style="background:#C87010"></div>Extroversao</div>
+        <div class="rleg-i"><div class="rleg-d" style="background:#229958"></div>Abertura</div>
+        <div class="rleg-i"><div class="rleg-d" style="background:#B83258"></div>Amabilidade</div>
+        <div class="rleg-i"><div class="rleg-d" style="background:#2450B8"></div>Conscienciosidade</div>
+      </div>
+    </div>
+    <div class="rdoms" id="rDoms"></div>
+    <div class="rc" id="rCombo"></div>
+    <div class="rft">
+      <h3 class="rft-h">Quer entender a <em>raiz emocional</em> por tras do seu perfil?</h3>
+      <p class="rft-d">O diagnostico revela o padrao. A Sessao Pocket acessa a logica emocional por tras dele.</p>
+      <div class="rft-btns">
+        <button class="btn-p" onclick="reiniciar()">Refazer teste</button>
+        <button class="btn-o" onclick="salvarPDF()">Salvar relatorio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var COR=[["#8B35B8","#F2EAFA"],["#C87010","#FBF0E0"],["#229958","#E2F5EC"],["#B83258","#FAE6EC"],["#2450B8","#E2EAF8"]];
+var ND=["Neuroticismo","Extroversao","Abertura","Amabilidade","Conscienciosidade"];
+var pg=0,rs=[],tP=6;
+
+var QS=[
+{d:0,f:0,t:"Revejo mentalmente conversas depois que acontecem, procurando o que poderia ter dito diferente.",r:false},
+{d:0,f:0,t:"Sinto o nervosismo no corpo antes de situacoes importantes, mesmo quando tudo aponta que vai dar certo.",r:false},
+{d:0,f:1,t:"Quando planos mudam de ultima hora, minha primeira reacao e interna, mesmo que eu nao demonstre.",r:false},
+{d:0,f:1,t:"Levo mais tempo do que gostaria para deixar para la depois de uma discussao.",r:false},
+{d:0,f:2,t:"Sou muito mais dura comigo mesma do que seria com alguem que eu amo.",r:false},
+{d:0,f:2,t:"Me recupero de erros com facilidade, nao fico ruminando.",r:true},
+{d:0,f:3,t:"Saio de situacoes sociais me perguntando o que as pessoas acharam de mim.",r:false},
+{d:0,f:3,t:"A presenca de alguem que me avalia muda a forma como eu me comporto.",r:false},
+{d:0,f:4,t:"Minhas emocoes chegam na frente do meu raciocinio em momentos de tensao.",r:false},
+{d:0,f:4,t:"Tenho exemplos concretos de decisoes tomadas no impulso que custaram mais do que deveriam.",r:false},
+{d:0,f:5,t:"Quando tudo acontece ao mesmo tempo, minha capacidade de pensar com clareza diminui.",r:false},
+{d:0,f:5,t:"Em situacoes de crise, consigo agir mesmo sem ter todas as respostas.",r:true},
+{d:1,f:0,t:"Pessoas que acabaram de me conhecer costumam se abrir comigo com facilidade.",r:false},
+{d:1,f:0,t:"Criar proximidade com estranhos exige um esforco consciente da minha parte.",r:true},
+{d:1,f:1,t:"Saio de encontros sociais com mais energia do que entrei.",r:false},
+{d:1,f:1,t:"Preciso de tempo sozinha depois de muita interacao, mesmo quando foi boa.",r:true},
+{d:1,f:2,t:"Quando tenho razao, me expresso mesmo que o ambiente nao seja receptivo.",r:false},
+{d:1,f:2,t:"Ha situacoes em que sei a resposta certa e fico quieta mesmo assim.",r:true},
+{d:1,f:3,t:"Dias sem compromissos me deixam mais inquieta do que descansada.",r:false},
+{d:1,f:3,t:"Funciono bem em ritmo acelerado, varias coisas acontecendo ao mesmo tempo.",r:false},
+{d:1,f:4,t:"A ideia de fazer algo pela primeira vez me anima mais do que me assusta.",r:false},
+{d:1,f:4,t:"Prefiro o risco calculado a certeza entediante.",r:false},
+{d:1,f:5,t:"Meu estado de animo padrao tende ao bem-estar, nao preciso de motivos para me sentir bem.",r:false},
+{d:1,f:5,t:"Tenho facilidade em encontrar algo que valha mesmo em situacoes ruins.",r:false},
+{d:2,f:0,t:"Minha mente cria cenarios e historias mesmo quando estou fazendo coisas simples.",r:false},
+{d:2,f:0,t:"Prefiro pensar no que e real e concreto do que no que poderia ser.",r:true},
+{d:2,f:1,t:"Ambientes fisicamente bonitos ou feios afetam meu humor de forma real e perceptivel.",r:false},
+{d:2,f:1,t:"Tenho preferencias esteticas bem definidas e noto quando algo esta fora de harmonia.",r:false},
+{d:2,f:2,t:"Consigo nomear o que estou sentindo com precisao, mesmo quando e complexo.",r:false},
+{d:2,f:2,t:"Minha vida emocional interna e mais intensa do que o que mostro para fora.",r:false},
+{d:2,f:3,t:"Escolho a experiencia nova antes da familiar quando tenho as duas opcoes.",r:false},
+{d:2,f:3,t:"Rotinas que se repetem sem variacao me entediam rapidamente.",r:false},
+{d:2,f:4,t:"Comeco a pesquisar um assunto por necessidade e acabo indo muito alem do necessario.",r:false},
+{d:2,f:4,t:"Prefiro analises diretas e praticas a explorar multiplas perspectivas do mesmo tema.",r:true},
+{d:2,f:5,t:"Questiono normas e tradicoes quando elas nao fazem sentido para mim, mesmo quando e incomodo.",r:false},
+{d:2,f:5,t:"Consigo entender perspectivas morais diferentes das minhas sem precisar concordar.",r:false},
+{d:3,f:0,t:"Minha primeira leitura das pessoas tende a ser positiva, suspeito depois se houver razao.",r:false},
+{d:3,f:0,t:"Monitoro inconsistencias entre o que as pessoas dizem e como agem.",r:true},
+{d:3,f:1,t:"Digo o que penso mesmo quando nao e o que a pessoa quer ouvir.",r:false},
+{d:3,f:1,t:"Ha situacoes em que escolho nao falar tudo para preservar a relacao.",r:true},
+{d:3,f:2,t:"Percebo quando alguem nao esta bem antes que a pessoa fale alguma coisa.",r:false},
+{d:3,f:2,t:"Me sinto bem de verdade, nao so por obrigacao, quando consigo ajudar alguem.",r:false},
+{d:3,f:3,t:"Em conflitos, prefiro ceder do que prolongar a tensao, mesmo quando acredito ter razao.",r:false},
+{d:3,f:3,t:"Consigo defender minha posicao com firmeza sem me sentir mal por isso.",r:true},
+{d:3,f:4,t:"Fico desconfortavel sendo elogiada publicamente, prefiro que os resultados falem.",r:false},
+{d:3,f:4,t:"Minimizo minhas conquistas mesmo quando poderiam e deveriam ser reconhecidas.",r:false},
+{d:3,f:5,t:"O sofrimento de pessoas proximas me afeta fisicamente, nao so emocionalmente.",r:false},
+{d:3,f:5,t:"Tenho dificuldade em me desligar emocionalmente de situacoes dificeis das pessoas ao meu redor.",r:false},
+{d:4,f:0,t:"Confio na minha capacidade de resolver situacoes novas mesmo sem ter o mapa completo.",r:false},
+{d:4,f:0,t:"Quando enfrento um desafio, minha primeira reacao e questionar se sou capaz.",r:true},
+{d:4,f:1,t:"Desordem no meu espaco fisico me incomoda, mesmo quando nao tenho tempo para resolver.",r:false},
+{d:4,f:1,t:"Sigo rotinas nao por obrigacao, mas porque elas me dao clareza e sensacao de controle.",r:false},
+{d:4,f:2,t:"Cumpro o que prometi mesmo quando seria mais facil desistir.",r:false},
+{d:4,f:2,t:"Me sinto mal quando deixo algo passar, mesmo quando a responsabilidade nao era minha.",r:false},
+{d:4,f:3,t:"Estabeleco padroes altos para mim e fico desconfortavel quando nao os atinjo.",r:false},
+{d:4,f:3,t:"Tenho objetivos de longo prazo claros que orientam minhas escolhas do dia a dia.",r:false},
+{d:4,f:4,t:"Mesmo sabendo o que precisa ser feito, as vezes demoro para comecar.",r:true},
+{d:4,f:4,t:"Consigo trabalhar com foco mesmo quando nao estou inspirada ou motivada.",r:false},
+{d:4,f:5,t:"Penso nas consequencias antes de tomar decisoes, especialmente as que nao tem volta.",r:false},
+{d:4,f:5,t:"Ja tomei decisoes importantes no impulso que me custaram mais do que deveriam.",r:true}
+];
+
+function tr(id){document.querySelectorAll('.screen').forEach(function(e){e.classList.remove('on')});document.getElementById(id).classList.add('on');window.scrollTo(0,0);}
+function iniciar(){rs=new Array(60).fill(null);pg=0;tr('sQ');rPg();}
+
+function rPg(){
+  var s=pg*10,e=Math.min(s+10,60),di=Math.floor(s/12);
+  document.getElementById('qPbF').style.width=(s/60*100)+'%';
+  document.getElementById('qPbF').style.background=COR[di][0];
+  document.getElementById('tbF').style.width=(s/60*100)+'%';
+  var b=document.getElementById('qBdg');b.textContent=ND[di];b.style.background=COR[di][1];b.style.color=COR[di][0];
+  document.getElementById('qInf').textContent=(s+1)+'-'+e+' de 60';
+  document.getElementById('qErr').textContent='';
+  var h='<div class="qitems">';
+  for(var i=s;i<e;i++){
+    var q=QS[i],c=COR[q.d][0],bg=COR[q.d][1];
+    h+='<div class="qi"><p class="qi-txt">'+(i+1)+'. '+q.t+'</p>';
+    h+='<div class="qlbls"><span class="qlbl">Nao me identifico</span><span class="qlbl">Me identifico muito</span></div>';
+    h+='<div class="qi-opts">';
+    for(var v=1;v<=5;v++){h+='<div class="qo '+(rs[i]===v?'sel':'')+'" style="--dc:'+c+';--db:'+bg+'" onclick="esc('+i+','+v+',this.parentElement)"><div class="qo-n">'+v+'</div><div class="qo-d"></div></div>';}
+    h+='</div></div>';
+  }
+  h+='</div><div class="qnav"><span class="qni">Pagina '+(pg+1)+' de 6</span><div class="qnbs">';
+  if(pg>0)h+='<button class="qbk" onclick="pgA()">Anterior</button>';
+  h+='<button class="qnx '+(tR(s,e)?'ok':'')+'" id="btnN" onclick="'+(e>=60?'calc()':'pgP()')+'">'+(e>=60?'Ver relatorio':'Proxima')+'</button></div></div>';
+  document.getElementById('qPg').innerHTML=h;
+}
+
+function esc(i,v,c){rs[i]=v;c.querySelectorAll('.qo').forEach(function(o,j){o.classList.toggle('sel',j+1===v);});document.getElementById('btnN').classList.toggle('ok',tR(pg*10,Math.min(pg*10+10,60)));}
+function tR(s,e){for(var i=s;i<e;i++){if(rs[i]===null)return false;}return true;}
+function pgP(){if(!tR(pg*10,Math.min(pg*10+10,60))){document.getElementById('qErr').textContent='Responda todas antes de continuar.';return;}pg++;rPg();}
+function pgA(){pg--;rPg();}
+function calc(){if(!tR(pg*10,Math.min(pg*10+10,60))){document.getElementById('qErr').textContent='Responda todas antes de continuar.';return;}tr('sLoad');setTimeout(function(){var sc=cSc();rRes(sc);tr('sRes');},2400);}
+
+function cSc(){
+  var ds=[];for(var i=0;i<5;i++)ds.push([0,0,0,0,0,0]);
+  QS.forEach(function(q,i){var v=rs[i]||3;ds[q.d][q.f]+=q.r?(6-v):v;});
+  var fp=ds.map(function(fs){return fs.map(function(s){return Math.round((s-2)/8*100);});});
+  var dp=fp.map(function(fs){return Math.round(fs.reduce(function(a,b){return a+b;},0)/6);});
+  return{f:fp,d:dp};
+}
+
+function niv(p){return p>=65?'Alto':p>=35?'Moderado':'Baixo';}
+function nc(p){return p>=65?'#1E6E3A':p>=35?'#7A540E':'#8A1E2E';}
+function nb(p){return p>=65?'#E8F6EE':p>=35?'#FBF2E0':'#FBEAEE';}
+
+function pG(d){
+  var N=d[0],E=d[1],O=d[2],A=d[3],C=d[4],mx=Math.max(N,E,O,A,C);
+  if(C>=70&&N>=65)return{n:"A Perfeccionista que Nunca Descansa",d:"Seu padrao interno e tao alto que pouquissimas pessoas conseguem acompanhar. Voce ve o que poderia ser melhor em tudo. Isso te faz extraordinaria na entrega e exausta por dentro. Voce cobra de si mesma o que nao cobraria de ninguem. E no final do dia, mesmo tendo feito muito, a sensacao e que nao foi suficiente."};
+  if(A>=70&&N>=65)return{n:"A Mulher que Cuida de Todos Menos de Si",d:"Voce sente a dor dos outros como se fosse sua. Antecipa o que as pessoas precisam antes de elas perceberem. E no final, quando voce precisa de alguem, o silencio e ensurdecedor. Porque voce ensinou o mundo a receber de voce. Mas ninguem te ensinou a pedir."};
+  if(C>=70)return{n:"A Realizadora de Alto Padrao",d:"Voce sofre porque tem um grau de consciencia muito elevado e as demais pessoas simplesmente nao tem esse compromisso. Voce ve o que precisa ser feito. Faz. Entrega. E fica perplexa quando os outros nao fazem o basico. Esse nivel de exigencia te isola."};
+  if(N>=70)return{n:"A Sensivel que Carrega o Mundo",d:"Voce nao esta exagerando. Voce realmente sente mais do que a maioria das pessoas. Uma critica pode reverberar por dias. Uma conversa mal resolvida tira o seu sono. Seu sistema nervoso opera em modo de alerta quase o tempo todo."};
+  if(A>=70)return{n:"A Generosa que Esqueceu de Si",d:"Voce faz de tudo pelos outros. Genuinamente, sem esperar nada. E o mundo aprendeu que pode contar com voce. Voce vai cedendo, ajudando, apoiando - ate nao sobrar nada para voce. E quando finalmente para para pedir, sente que e demais."};
+  if(O>=70&&E<=40)return{n:"A Pensadora que Poucos Entendem",d:"Voce pensa em camadas que a maioria das pessoas nao acessa. Conecta pontos que parecem desconexos. E frequentemente se sente so nessa percepcao - porque explicar como voce chegou la daria mais trabalho do que o resultado vale."};
+  if(E>=70&&A>=65)return{n:"A Forca do Ambiente",d:"Voce transforma ambientes. Chega em algum lugar e as pessoas se sentem melhores. E mesmo sendo toda essa presenca, tem momentos em que voce se pergunta se alguem realmente te ve - ou se ve so o que voce entrega."};
+  if(C>=65&&O>=65)return{n:"A Criativa que Executa",d:"Voce nao so tem ideias - voce as realiza. Essa combinacao de criatividade e disciplina e rara e poderosa. O desafio e que voce ve o potencial de tudo e sofre quando as coisas ficam aquem do que poderiam ser."};
+  if(N>=60&&C>=60)return{n:"A Exigente Ansiosa",d:"Voce quer fazer tudo certo. E a ansiedade aparece exatamente quando voce mais precisa de clareza. Seu padrao alto te impulsiona - e ao mesmo tempo te paralisa."};
+  if(E<=35&&N>=55)return{n:"A Introvertida Sobrecarregada",d:"Voce precisa de silencio para funcionar. E o mundo e barulhento demais. Voce volta pra casa exausta, ainda com a mente girando, sem conseguir descansar de verdade."};
+  if(A>=60&&C>=60&&N<=45)return{n:"A Parceira Confiavel",d:"Voce e o tipo de pessoa em quem as outras confiam completamente. Cumpre o que promete, cuida das relacoes e e consistente. O custo: voce carrega responsabilidades que nao sao suas porque sabe que vai cumprir mesmo quando deveria dizer nao."};
+  if(mx===N)return{n:"A Sensivel",d:"Voce sente mais fundo do que a maioria. Isso tem um custo e um presente - e entender qual e qual e o trabalho mais importante que voce pode fazer agora."};
+  if(mx===E)return{n:"A Energetica",d:"Voce se alimenta de conexoes e movimento. O desafio e garantir que essa energia que voce da ao mundo tambem volte para voce."};
+  if(mx===O)return{n:"A Curiosa",d:"Sua mente nunca para. Voce pensa em coisas que a maioria nao pensa e tem uma riqueza interior que pouca gente consegue acessar."};
+  if(mx===A)return{n:"A Generosa",d:"Voce da muito. Mais do que recebe. O maior trabalho que voce pode fazer agora e aprender a receber com a mesma abertura com que da."};
+  return{n:"A Realizadora",d:"Voce entrega. Sempre. Mesmo quando nao deveria, mesmo quando esta no limite. Essa consistencia e sua maior forca - e tambem a fonte do seu maior cansaco."};
+}
+
+var INTERP=[
+  {alto:"Seu neuroticismo e alto. Nao e fraqueza nem drama. E um sistema nervoso calibrado para detectar ameacas com muito mais sensibilidade do que a media. Voce revisita conversas que ja aconteceram, se preocupa com coisas que podem nem acontecer e, quando algo vai mal, leva mais tempo do que gostaria para se recuperar.\n\nO perigo real desse nivel: se voce nao tiver novas formas de regular esse sistema, vai continuar achando que tem Transtorno de Ansiedade Generalizada quando na verdade tem um perfil de personalidade que precisa de ferramentas especificas.\n\nSua sensibilidade e tambem o que te faz perceber o que os outros nao percebem. Sentir o ambiente mudar. Notar quando uma relacao comecou a rachar. O problema e quando esse radar fica ligado 24 horas sem voce saber como desligar.",
+   medio:"Voce tem sensibilidade emocional real - nao e invulneravel - mas tambem tem recursos internos para se recuperar. Sente a pressao e o estresse, mas nao fica soterrada por eles.",
+   baixo:"Voce e emocionalmente estavel de um jeito que pouquissimas pessoas sao. Quando o caos bate, voce mantem a clareza. As pessoas te procuram porque voce nao entra em panico. O ponto de atencao: estabilidade emocional nao significa ausencia de necessidades.",
+   fn:["Ansiedade: Seu sistema de alarme dispara antes da ameaca chegar. Voce gasta energia antecipando problemas que muitas vezes nao se concretizam.",
+     "Raiva e Frustracao: Voce tem um padrao claro do que deveria acontecer - e quando a realidade nao bate com isso, a frustracao e automatica.",
+     "Autocritica: Voce aplica a si mesma padroes que jamais aplicaria a alguem que ama. Um erro seu e uma falha de carater. Um erro do outro e humano.",
+     "Autoconsciencia Social: Voce sai de conversas pensando no que disse, como soou, o que a outra pessoa achou. Isso consome energia real.",
+     "Decisoes Emocionais: Suas emocoes chegam antes do raciocinio. Em momentos de estresse, voce pode agir de formas que depois se arrepende.",
+     "Vulnerabilidade ao Estresse: Quando tudo acontece ao mesmo tempo, voce trava. Nao porque e incapaz - mas porque seu sistema chegou no limite."],
+   fnn:["Ansiedade","Raiva e Frustracao","Autocritica","Autoconsciencia Social","Decisoes Emocionais","Vulnerabilidade ao Estresse"]},
+  {alto:"Voce e movida por conexao. Pensa em voz alta, processa falando, se energiza com presenca. Ficar muito tempo sozinha nao te descansa - te deixa inquieta.\n\nO que poucos percebem sobre pessoas altamente extrovertidas: voce pode estar rodeada de gente e ainda assim se sentir completamente invisivel. Porque a quantidade de conexoes nao substitui a profundidade delas.",
+   medio:"Voce equilibra bem o social e o silencio. Sabe estar presente quando e necessario e tambem sabe se recolher. Nao e extrema em nenhum dos lados.",
+   baixo:"Voce recarrega na solitude. Ambientes barulhentos e grupos grandes te esgotam. Isso nao e antissocialidade - e um sistema nervoso que processa melhor com menos estimulo externo. O problema e que o mundo foi desenhado para extrovertidos.",
+   fn:["Cordialidade: As pessoas se sentem bem perto de voce mesmo sem saber por que. Voce transmite algo seguro e acolhedor.",
+     "Gregarismo: Alto - voce recarrega com gente. Baixo - voce recarrega sozinha. Os dois sao validos. O problema e quando voce ignora o que seu sistema precisa.",
+     "Assertividade: O espaco que voce nao ocupa, alguem menos qualificado ocupa. Se esta baixa aqui, voce tem muito a dizer e ainda esta aprendendo a ocupar o lugar que merece.",
+     "Nivel de Atividade: Alto - voce e movida, sempre com algo acontecendo. O risco e nao saber parar antes de esgotar.",
+     "Busca por Emocoes: Alto - rotinas te matam de tedio, voce precisa de desafio para se sentir viva. Baixo - seguranca e previsibilidade sao fundamentais.",
+     "Emocoes Positivas: Alto nao significa que voce nunca sofre - significa que voce tem uma capacidade natural de encontrar o que vale no meio do que nao vale."],
+   fnn:["Cordialidade","Gregarismo","Assertividade","Nivel de Atividade","Busca por Emocoes","Emocoes Positivas"]},
+  {alto:"Voce nao aceita respostas prontas. Questiona, vai fundo, quer entender por que as coisas funcionam do jeito que funcionam. Isso te torna fascinante - e frequentemente incompreendida.\n\nVoce provavelmente ja se sentiu complexa demais. A verdade e que a maioria das pessoas opera num nivel de profundidade diferente do seu. E e dificil encontrar quem aguente o mergulho.",
+   medio:"Voce aprende quando faz sentido pra voce. Nao vai em qualquer ideia nova, mas quando algo realmente te interessa, vai fundo. Equilibra curiosidade com praticidade.",
+   baixo:"Voce e objetiva e eficiente. Vai direto ao que funciona. Nao precisa de teoria complexa para resolver o que esta na sua frente. Isso tem valor enorme num mundo que adora complicar o simples.",
+   fn:["Imaginacao: Voce vive em dois mundos ao mesmo tempo - o real e o possivel. Isso alimenta criatividade enorme. E tambem pode alimentar ansiedade quando o imaginario fica pesado.",
+     "Estetica: Ambientes, sons e imagens impactam seu humor de forma real. A feiura do mundo te afeta mais do que a maioria percebe.",
+     "Vida Emocional: Voce sente em camadas - raramente uma emocao e simples. Isso e profundidade. E pode ser exaustivo quando nao ha espaco para processar.",
+     "Abertura para o Novo: Repetir as mesmas coisas te entedia rapidamente. Voce precisa de variacao para se sentir viva.",
+     "Curiosidade Intelectual: Voce nunca para de aprender - nao por obrigacao, mas porque a ignorancia te incomoda mais do que o esforco.",
+     "Abertura a Valores: Voce nao aceita porque sempre foi assim como resposta. Isso incomoda algumas pessoas - e e exatamente o que o mundo precisa."],
+   fnn:["Imaginacao","Estetica","Vida Emocional","Abertura para o Novo","Curiosidade Intelectual","Abertura a Valores"]},
+  {alto:"Sua amabilidade e otima para os outros. E quando voce faz de tudo pelo outro, ninguem faz nada para voce. Nao porque as pessoas sao ruins - mas porque voce ensinou o mundo que pode contar com voce incondicionalmente.\n\nVoce provavelmente ja ficou esperando que alguem fizesse por voce o que voce faz pelos outros. E ficou em silencio quando isso nao veio. Porque pedir parece demais.\n\nNao e. E voce precisando do que qualquer ser humano precisa.",
+   medio:"Voce e generosa sem se perder. Consegue estar presente para os outros e tambem sabe quando precisa se recolher. Tem empatia real - e tambem tem limite.",
+   baixo:"Voce e direta e nao tem medo de dizer o que pensa. Num mundo cheio de concordatos por medo de conflito, voce fala o que e real.",
+   fn:["Confianca: Voce da o beneficio da duvida. Isso e bonito - e pode te colocar em situacoes onde voce e a ultima a perceber que estava sendo usada.",
+     "Franqueza: Alto - voce nao faz jogo duplo. O que voce diz e o que voce pensa. Baixo - voce preserva relacoes guardando o que sente. O preco e acumular.",
+     "Altruismo: Voce percebe quando as pessoas nao estao bem antes delas perceberem. E ja esta pensando em como ajudar. Mas voce nao pode dar o que nao tem.",
+     "Cooperacao: Alto - voce engole sapos para manter a paz. O preco e ressentimento acumulado que um dia vem a tona de um jeito que voce nao esperava.",
+     "Modestia: Alto - voce raramente ocupa o espaco que merece. Reconhecer o que voce e nao e arrogancia - e honestidade.",
+     "Empatia: Voce carrega dores que nao sao suas. Sente o peso emocional dos outros como se fosse seu. E muitas vezes nao percebe quando cruzou essa fronteira."],
+   fnn:["Confianca","Franqueza","Altruismo","Cooperacao","Modestia","Empatia"]},
+  {alto:"Sua conscienciosidade e altissima. Voce sofre porque tem um grau de consciencia muito elevado e as demais pessoas nao tem esse compromisso. Voce ve o que precisa ser feito. Faz. Entrega. E fica genuinamente perplexa quando as pessoas ao redor nao veem o que parece obvio.\n\nIsso te isola. Porque e dificil encontrar pessoas que operem no mesmo nivel. E e ainda mais dificil quando elas inevitavelmente decepcionam.\n\nO trabalho mais importante: aprender a separar o que voce faz do que voce e. Porque quando o trabalho vai mal, voce vai mal junto. E isso nao deveria ser assim.",
+   medio:"Voce tem disciplina quando precisa - e tambem consegue relaxar. Nao e rigida, mas e confiavel. Sabe quando empurrar e quando soltar.",
+   baixo:"Voce e espontanea e flexivel. Rotinas rigidas te sufocam. A flexibilidade que parece fraqueza em alguns contextos e exatamente o que faz voce prosperar onde outros travam.",
+   fn:["Autoeficacia: O maior limite que te segura muitas vezes esta dentro de voce - nao fora. Baixa autoeficacia significa que voce subestima o que e capaz antes de tentar.",
+     "Organizacao: Alto - seu espaco externo reflete seu estado interno. Desordem te incomoda profundamente. As vezes o excesso de organizacao e uma forma de controlar o que nao consegue controlar internamente.",
+     "Senso de Dever: Alto - voce carrega responsabilidades que as vezes nao sao suas. Diz sim quando deveria dizer nao - porque nao cumprir parece uma falha moral.",
+     "Ambicao: Alto - o espaco entre onde esta e onde quer chegar pode ser uma fonte constante de insatisfacao. Voce quer muito - e isso tem um custo emocional real.",
+     "Autodisciplina: Baixa autodisciplina nao e preguica - muitas vezes e a mente tentando se proteger de algo que antecipa como dificil ou doloroso.",
+     "Cautela: Alto - voce raramente se arrepende de decisoes porque avalia antes. O risco e que a janela fecha enquanto voce ainda esta analisando."],
+   fnn:["Autoeficacia","Organizacao","Senso de Dever","Ambicao","Autodisciplina","Cautela"]}
+];
+
+function rRes(sc){
+  var pf=pG(sc.d);
+  document.getElementById('rPerf').innerHTML='<div class="rc-lbl">Seu perfil</div><div class="rc-nome"><em>'+pf.n+'</em></div><p class="rc-desc">'+pf.d+'</p>';
+  setTimeout(function(){dRadar(sc.d);},300);
+  var de=document.getElementById('rDoms');de.innerHTML='';
+  sc.d.forEach(function(p,i){
+    var dm=INTERP[i],nv=niv(p),txt=nv==='Alto'?dm.alto:nv==='Moderado'?dm.medio:dm.baixo;
+    var el=document.createElement('div');el.className='rdom';
+    var fh='<div class="rfacets">';
+    sc.f[i].forEach(function(fp,fi){
+      fh+='<div class="rfacet" style="background:'+COR[i][1]+'"><div class="rfacet-top"><span class="rfacet-n">'+dm.fnn[fi]+'</span><span class="rfacet-pct" style="color:'+COR[i][0]+'">'+fp+'%</span></div><div class="rfacet-bar"><div class="rfacet-fill" style="background:'+COR[i][0]+'" data-w="'+fp+'"></div></div><p class="rfacet-desc">'+dm.fn[fi]+'</p></div>';
+    });fh+='</div>';
+    el.innerHTML='<div class="rdom-top" onclick="togD(this)"><div class="rdom-ico" style="background:'+COR[i][0]+'">'+['N','E','O','A','C'][i]+'</div><div class="rdom-inf"><div class="rdom-n">'+ND[i]+'</div><div class="rdom-s">'+p+'% '+nv+'</div></div><div class="rdom-rt"><div class="rdom-pct">'+p+'%</div><div class="rdom-niv" style="color:'+COR[i][0]+'">'+nv+'</div></div></div><div class="rdom-bw"><div class="rdom-bbg"><div class="rdom-bf" style="background:'+COR[i][0]+'" data-w="'+p+'"></div></div></div><div class="rdom-exp"><div class="rdom-con"><p class="rdom-desc">'+txt+'</p>'+fh+'</div></div>';
+    de.appendChild(el);
+  });
+  rCombos(sc.d);
+  setTimeout(function(){
+    document.querySelectorAll('[data-w]').forEach(function(b){b.style.width=b.dataset.w+'%';});
+    document.querySelectorAll('.rdom-exp').forEach(function(e){e.classList.add('op');});
+    document.querySelectorAll('.rdom').forEach(function(e){e.classList.add('op');});
+  },350);
+}
+
+function rCombos(d){
+  var N=d[0],E=d[1],O=d[2],A=d[3],C=d[4],items=[];
+  if(N>=65)items.push({t:"Neuroticismo alto - como aparece na sua vida",d:"Voce dorme mal quando tem algo importante no dia seguinte. Sai de conversas repassando mentalmente o que disse. Sente o corpo tenso antes de situacoes de avaliacao. Tem dias em que o cansaco emocional chega antes do fisico. Tudo isso e seu sistema nervoso operando no limite."});
+  else if(N<=35)items.push({t:"Neuroticismo baixo - como aparece na sua vida",d:"Voce e a pessoa que mantem a calma quando todo mundo esta em panico. Crises nao te derrubam. Voce processa, decide e segue. Lembre-se: estabilidade nao significa que voce nao tem necessidades."});
+  else items.push({t:"Neuroticismo moderado - como aparece na sua vida",d:"Voce sente o estresse das situacoes dificeis, mas consegue se recuperar. Algumas coisas te afetam mais do que outras - e isso e completamente normal."});
+  if(E>=65)items.push({t:"Extroversao alta - como aparece na sua vida",d:"Voce pensa melhor falando do que em silencio. Dias sem interacao social te deixam inquieta. Seu humor melhora quando esta com pessoas. Em ambientes de trabalho, voce tende a liderar naturalmente - mesmo quando nao e o cargo."});
+  else if(E<=35)items.push({t:"Extroversao baixa - como aparece na sua vida",d:"Depois de um dia com muita interacao social, voce precisa de silencio para se recuperar. Festas e grupos grandes te cansam mesmo quando voce esta curtindo. Voce ja foi chamada de fria por pessoas que nao te conhecem de verdade."});
+  else items.push({t:"Extroversao moderada - como aparece na sua vida",d:"Voce consegue ser presenca social quando precisa e tambem valoriza o silencio. Nao e extrema em nenhum dos lados - o que te da flexibilidade real."});
+  if(O>=65)items.push({t:"Abertura alta - como aparece na sua vida",d:"Voce fica entediada facilmente com o que e sempre igual. Comeca projetos com entusiasmo e as vezes tem dificuldade de terminar porque ja apareceu algo mais interessante. E frequentemente sente que as pessoas ao redor nao acompanham a profundidade do que voce pensa."});
+  else if(O<=35)items.push({t:"Abertura baixa - como aparece na sua vida",d:"Voce vai fundo no que conhece e confia no que ja funciona. Mudancas drasticas de rota te geram desconforto. Voce prefere aprofundar do que ampliar."});
+  else items.push({t:"Abertura moderada - como aparece na sua vida",d:"Voce aprecia coisas novas quando elas fazem sentido pra voce. Equilibra tradicao e inovacao de um jeito pratico."});
+  if(A>=65)items.push({t:"Amabilidade alta - como aparece na sua vida",d:"Voce percebe quando alguem nao esta bem antes de a pessoa falar. Tem dificuldade em dizer nao mesmo quando precisa. Sai de conflitos sentindo que foi voce que cedeu - mesmo quando tinha razao. E provavelmente ja ajudou pessoas que nao fizeram o mesmo por voce mais vezes do que gostaria de contar."});
+  else if(A<=35)items.push({t:"Amabilidade baixa - como aparece na sua vida",d:"Voce fala o que pensa mesmo quando nao e o que a pessoa quer ouvir. Tem facilidade em dizer nao. Isso te protege de ser explorada - e pode ser interpretado como frieza por quem nao te conhece."});
+  else items.push({t:"Amabilidade moderada - como aparece na sua vida",d:"Voce e generosa quando escolhe ser. Consegue dizer nao sem culpa excessiva. Tem empatia real mas tambem tem limite."});
+  if(C>=65)items.push({t:"Conscienciosidade alta - como aparece na sua vida",d:"Voce cumpre o que promete mesmo quando nao devia ter prometido. Fica incomodada quando ve algo que poderia ser melhor e ninguem faz nada. Tem dificuldade de descansar sem sentir que mereceu. E provavelmente ja terminou o trabalho dos outros porque sabia que eles nao iam fazer direito."});
+  else if(C<=35)items.push({t:"Conscienciosidade baixa - como aparece na sua vida",d:"Voce funciona melhor com liberdade do que com estrutura. Tem dias muito produtivos e dias que nao saem as coisas. Prazos rigidos e rotinas muito fixas te sufocam."});
+  else items.push({t:"Conscienciosidade moderada - como aparece na sua vida",d:"Voce e confiavel sem ser rigida. Entrega o que promete mas sabe quando flexibilizar."});
+  document.getElementById('rCombo').innerHTML='<h3 class="rcombo-h">Como seu perfil <em>afeta sua vida na pratica</em></h3>'+items.map(function(c){return '<div class="rci"><b>'+c.t+'</b><br>'+c.d+'</div>';}).join('');
+}
+
+function togD(h){
+  var d=h.parentElement,e=d.querySelector('.rdom-exp'),op=e.classList.contains('op');
+  document.querySelectorAll('.rdom-exp').forEach(function(x){x.classList.remove('op');});
+  document.querySelectorAll('.rdom').forEach(function(x){x.classList.remove('op');});
+  if(!op){e.classList.add('op');d.classList.add('op');}
+}
+
+function dRadar(dm){
+  var cv=document.getElementById('radar');if(!cv)return;
+  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2,r=W*.36,n=5;
+  ctx.clearRect(0,0,W,H);
+  for(var g=1;g<=5;g++){ctx.beginPath();for(var i=0;i<n;i++){var a=-Math.PI/2+2*Math.PI*i/n,rg=r*g/5;i===0?ctx.moveTo(cx+rg*Math.cos(a),cy+rg*Math.sin(a)):ctx.lineTo(cx+rg*Math.cos(a),cy+rg*Math.sin(a));}ctx.closePath();ctx.strokeStyle='rgba(0,0,0,.07)';ctx.lineWidth=1;ctx.stroke();}
+  for(var i=0;i<n;i++){var a=-Math.PI/2+2*Math.PI*i/n;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));ctx.strokeStyle='rgba(0,0,0,.07)';ctx.lineWidth=1;ctx.stroke();}
+  ctx.beginPath();dm.forEach(function(p,i){var a=-Math.PI/2+2*Math.PI*i/n,rv=r*(p/100);i===0?ctx.moveTo(cx+rv*Math.cos(a),cy+rv*Math.sin(a)):ctx.lineTo(cx+rv*Math.cos(a),cy+rv*Math.sin(a));});ctx.closePath();ctx.fillStyle='rgba(100,80,200,.09)';ctx.fill();ctx.strokeStyle='rgba(100,80,200,.4)';ctx.lineWidth=2;ctx.stroke();
+  dm.forEach(function(p,i){var a=-Math.PI/2+2*Math.PI*i/n,rv=r*(p/100);ctx.beginPath();ctx.arc(cx+rv*Math.cos(a),cy+rv*Math.sin(a),5,0,2*Math.PI);ctx.fillStyle=COR[i][0];ctx.fill();});
+  ctx.font='bold 11px Jost,sans-serif';ctx.fillStyle='#666';ctx.textAlign='center';ctx.textBaseline='middle';
+  ['N','E','O','A','C'].forEach(function(l,i){var a=-Math.PI/2+2*Math.PI*i/n,rl=r+20;ctx.fillText(l,cx+rl*Math.cos(a),cy+rl*Math.sin(a));});
+}
+
+function salvarPDF(){
+  document.querySelectorAll('[data-w]').forEach(function(b){b.style.width=b.dataset.w+'%';});
+  document.querySelectorAll('.rdom-exp').forEach(function(e){e.style.maxHeight='none';e.style.overflow='visible';});
+  setTimeout(function(){window.print();},400);
+}
+
+function reiniciar(){pg=0;rs=[];tr('sCov');}
+window.addEventListener('scroll',function(){var h=document.documentElement.scrollHeight-innerHeight;if(h>0)document.getElementById('tbF').style.width=(scrollY/h*100)+'%';});
+</script>
+</body>
+</html>
